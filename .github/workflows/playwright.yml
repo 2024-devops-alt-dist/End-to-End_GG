@@ -15,20 +15,25 @@ jobs:
           node-version: lts/*
       - name: Install dependencies
         run: npm ci
+        working-directory: my-vue-app
       - name: Start Vite server
         run: npm run dev &
         env:
           CI: true
+        working-directory: my-vue-app
       - name: Wait for Vite to start
         run: |
           timeout 60 sh -c 'until curl -s http://localhost:5173; do echo waiting for vite...; sleep 2; done'
+        working-directory: my-vue-app
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+        working-directory: my-vue-app
       - name: Run Playwright tests
         run: npx playwright test
+        working-directory: my-vue-app
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
-          path: playwright-report/
+          path: my-vue-app/playwright-report/
           retention-days: 30
